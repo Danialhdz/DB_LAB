@@ -41,7 +41,6 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE get_account_number
 ---- Procedure to generate account number based on current timestamp
 --CREATE PROCEDURE get_account_number
 --    @account_number CHAR(16) OUTPUT
@@ -81,5 +80,20 @@ BEGIN
     FROM inserted;
 
     EXEC complete_fields @username, @account_number;
+END;
+GO
+
+-- Trigger definition
+CREATE TRIGGER trg_update_recent_events
+ON latest_balance
+AFTER UPDATE
+AS
+BEGIN
+    -- Insert into recent_events table whenever latest_balance is updated
+    INSERT INTO recent_events (event_type, event_time, account_number, amount)
+    SELECT 'balance_update', GETDATE(), i.account_number, i.amount
+    FROM inserted i
+    INNER JOIN deleted d ON i.account_number = d.account_number
+    WHERE i.amount <> d.amount;
 END;
 GO

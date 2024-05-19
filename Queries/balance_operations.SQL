@@ -5,7 +5,7 @@ CREATE TYPE TRANS AS TABLE (
 );
 
 
-ALTER PROCEDURE update_balance
+CREATE PROCEDURE update_balance
 AS
 BEGIN
     DECLARE @latest_update DATETIME;
@@ -42,7 +42,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE update_balance1
+CREATE PROCEDURE update_balance1
     @curr_account_number VARCHAR(20),
     @latest_update DATETIME
 AS
@@ -120,24 +120,6 @@ BEGIN
 END;
 GO
 
--- Trigger definition
-CREATE TRIGGER trg_update_recent_events
-ON latest_balance
-AFTER UPDATE
-AS
-BEGIN
-    -- Insert into recent_events table whenever latest_balance is updated
-    INSERT INTO recent_events (event_type, event_time, account_number, amount)
-    SELECT 'balance_update', GETDATE(), i.account_number, i.amount
-    FROM inserted i
-    INNER JOIN deleted d ON i.account_number = d.account_number
-    WHERE i.amount <> d.amount;
-END;
-GO
-
-
-
-
 --makes snapshot of the latest update
 CREATE PROCEDURE make_snapshot
 AS
@@ -169,7 +151,7 @@ SELECT
 FROM 
     latest_balance;
 
-ALTER PROCEDURE check_balance
+CREATE PROCEDURE check_balance
     @curr_balance DECIMAL(16, 2) OUTPUT
 AS
 BEGIN

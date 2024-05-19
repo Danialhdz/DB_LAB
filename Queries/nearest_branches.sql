@@ -29,7 +29,7 @@ SELECT
 FROM 
     branches;
 
-ALTER PROCEDURE FindNearestBranch
+CREATE PROCEDURE FindNearestBranch
     @City VARCHAR(50)
 AS
 BEGIN

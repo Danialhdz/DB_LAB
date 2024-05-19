@@ -1,4 +1,4 @@
-Alter PROCEDURE deposit
+CREATE PROCEDURE deposit
     @amount DECIMAL(16,2),
     @message VARCHAR(100) OUTPUT
 AS
@@ -28,7 +28,7 @@ END;
 
 
 
-ALTER PROCEDURE withdraw
+CREATE PROCEDURE withdraw
     @amount DECIMAL(16, 2),
     @message NVARCHAR(100) OUTPUT
 AS
@@ -57,7 +57,7 @@ BEGIN
 END;
 
 
-ALTER PROCEDURE transfer
+CREATE PROCEDURE transfer
     @amount DECIMAL(16, 2),
     @to_username NVARCHAR(20),
     @message NVARCHAR(100) OUTPUT
@@ -101,7 +101,7 @@ BEGIN
 END;
 
 
-ALTER PROCEDURE interest_payment
+CREATE PROCEDURE interest_payment
     @message NVARCHAR(100) OUTPUT
 AS
 BEGIN
