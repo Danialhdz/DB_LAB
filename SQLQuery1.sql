@@ -45,13 +45,23 @@ INSERT INTO snapshot_log (snapshot_time) VALUES
 --        @interest_rate DECIMAL(4,2) = 0.1,
 --        @message VARCHAR(100),
 --        @username VARCHAR(20);
-DECLARE @password VARCHAR(500) = '12345',
-        @first_name VARCHAR(20) = 'danial',
-        @last_name VARCHAR(20) = 'hadi',
-        @national_id CHAR(10) = '9876543210',
+--DECLARE @password VARCHAR(500) = '12345',
+--        @first_name VARCHAR(20) = 'danial',
+--        @last_name VARCHAR(20) = 'hadi',
+--        @national_id CHAR(10) = '9876543210',
+--        @date_of_birth DATE = '2003-05-25',
+--        @account_type VARCHAR(8) = 'client',
+--        @interest_rate DECIMAL(4,2) = 0.7,
+--        @message VARCHAR(100),
+--        @username VARCHAR(20);
+
+DECLARE @password VARCHAR(500) = '1111',
+        @first_name VARCHAR(20) = 'Amireza',
+        @last_name VARCHAR(20) = 'Gholi',
+        @national_id CHAR(10) = '9986543210',
         @date_of_birth DATE = '2003-05-25',
-        @account_type VARCHAR(8) = 'client',
-        @interest_rate DECIMAL(4,2) = 0.7,
+        @account_type VARCHAR(8) = 'employee',
+        @interest_rate DECIMAL(4,2) = 0.3,
         @message VARCHAR(100),
         @username VARCHAR(20);
 
@@ -144,7 +154,7 @@ EXEC check_balance @currentBalance OUTPUT;
 SELECT @currentBalance AS CurrentBalance;
 
 select * from latest_balance
-
+select * from recent_events
 
 
 DROP table latest_balance
@@ -161,3 +171,20 @@ DROP table account
 SELECT CAST(CAST(DATEDIFF(SECOND, '1970-01-01', SYSDATETIME()) AS BIGINT) * 1000000 AS BIGINT);
 
 SELECT CAST(CAST(CAST(DATEDIFF(SECOND, '1970-01-01', SYSDATETIME()) AS BIGINT) * 1000000 AS BIGINT) AS CHAR(16));
+
+INSERT INTO branches (branch_name, address, city, state, postal_code, country)
+VALUES
+('Downtown Branch', '123 Main St', 'New York', 'NY', '10001', 'USA'),
+('Uptown Branch', '456 Elm St', 'New York', 'NY', '10011', 'USA'),
+('Central Branch', '789 Maple Ave', 'Los Angeles', 'CA', '90001', 'USA'),
+('Westside Branch', '101 Pine St', 'Los Angeles', 'CA', '90011', 'USA'),
+('Eastside Branch', '202 Oak St', 'Chicago', 'IL', '60601', 'USA'),
+('Southside Branch', '303 Birch St', 'Chicago', 'IL', '60611', 'USA'),
+('Northside Branch', '404 Cedar St', 'Houston', 'TX', '77001', 'USA'),
+('Midtown Branch', '505 Spruce St', 'Houston', 'TX', '77011', 'USA'),
+('City Center Branch', '606 Ash St', 'Miami', 'FL', '33101', 'USA'),
+('Beachside Branch', '707 Palm St', 'Miami', 'FL', '33111', 'USA');
+
+EXEC FindNearestBranch @City = 'New York';
+
+

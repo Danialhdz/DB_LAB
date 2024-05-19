@@ -5,7 +5,7 @@ CREATE TYPE TRANS AS TABLE (
 );
 
 
-Alter PROCEDURE update_balance
+ALTER PROCEDURE update_balance
 AS
 BEGIN
     DECLARE @latest_update DATETIME;
@@ -71,25 +71,40 @@ BEGIN
         IF @trans_type = 'deposit'
         BEGIN
             SET @new_balance = @new_balance + @trans_amount;
+            -- Insert into recent_events table
+            INSERT INTO recent_events (event_type, event_time, account_number, amount)
+            VALUES ('deposit', GETDATE(), @curr_account_number, @trans_amount);
         END
         ELSE IF @trans_type = 'withdraw'
         BEGIN
             SET @new_balance = @new_balance - @trans_amount;
+            -- Insert into recent_events table
+            INSERT INTO recent_events (event_type, event_time, account_number, amount)
+            VALUES ('withdraw', GETDATE(), @curr_account_number, @trans_amount);
         END
         ELSE IF @trans_type = 'transfer'
         BEGIN
             IF @trans_from_account = @curr_account_number
             BEGIN
                 SET @new_balance = @new_balance - @trans_amount;
+                -- Insert into recent_events table
+                INSERT INTO recent_events (event_type, event_time, account_number, amount)
+                VALUES ('transfer_out', GETDATE(), @curr_account_number, @trans_amount);
             END
             ELSE
             BEGIN
                 SET @new_balance = @new_balance + @trans_amount;
+                -- Insert into recent_events table
+                INSERT INTO recent_events (event_type, event_time, account_number, amount)
+                VALUES ('transfer_in', GETDATE(), @curr_account_number, @trans_amount);
             END
         END
         ELSE -- assume type is 'interest'
         BEGIN
             SET @new_balance = @new_balance * (1 + @trans_amount);
+            -- Insert into recent_events table
+            INSERT INTO recent_events (event_type, event_time, account_number)
+            VALUES ('interest', GETDATE(), @curr_account_number);
         END;
 
         FETCH NEXT FROM trans_cursor INTO @trans_type, @trans_amount, @trans_from_account;
@@ -104,6 +119,22 @@ BEGIN
     WHERE account_number = @curr_account_number;
 END;
 GO
+
+-- Trigger definition
+CREATE TRIGGER trg_update_recent_events
+ON latest_balance
+AFTER UPDATE
+AS
+BEGIN
+    -- Insert into recent_events table whenever latest_balance is updated
+    INSERT INTO recent_events (event_type, event_time, account_number, amount)
+    SELECT 'balance_update', GETDATE(), i.account_number, i.amount
+    FROM inserted i
+    INNER JOIN deleted d ON i.account_number = d.account_number
+    WHERE i.amount <> d.amount;
+END;
+GO
+
 
 
 
