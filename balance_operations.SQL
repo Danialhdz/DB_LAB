@@ -147,7 +147,29 @@ BEGIN
 END;
 
 
-CREATE PROCEDURE check_balance
+--CREATE PROCEDURE check_balance
+--    @curr_balance DECIMAL(16, 2) OUTPUT
+--AS
+--BEGIN
+--    DECLARE @curr_account_number CHAR(16);
+
+--    -- Get the current user's account number
+--    EXEC get_current_user @curr_account_number OUTPUT;
+
+--    -- Get the current balance for the current account number
+--    SELECT @curr_balance = amount
+--    FROM latest_balance
+--    WHERE account_number = @curr_account_number;
+--END;
+
+CREATE VIEW v_latest_balance AS
+SELECT 
+    account_number, 
+    amount
+FROM 
+    latest_balance;
+
+ALTER PROCEDURE check_balance
     @curr_balance DECIMAL(16, 2) OUTPUT
 AS
 BEGIN
@@ -156,8 +178,9 @@ BEGIN
     -- Get the current user's account number
     EXEC get_current_user @curr_account_number OUTPUT;
 
-    -- Get the current balance for the current account number
+    -- Get the current balance for the current account number using the view
     SELECT @curr_balance = amount
-    FROM latest_balance
+    FROM v_latest_balance
     WHERE account_number = @curr_account_number;
 END;
+GO

@@ -18,26 +18,53 @@ END;
 GO
 
 
+---- Procedure to generate username
+--CREATE PROCEDURE get_username
+--    @last_name VARCHAR(15),
+--    @account_number CHAR(16),
+--    @username VARCHAR(20) OUTPUT
+--AS
+--BEGIN
+--    SET @username = @last_name + SUBSTRING(@account_number,6,5);
+--END;
+--GO
 
--- Procedure to generate username
-CREATE PROCEDURE get_username
+-- Function to generate username
+CREATE FUNCTION get_username (
     @last_name VARCHAR(15),
-    @account_number CHAR(16),
-    @username VARCHAR(20) OUTPUT
+    @account_number CHAR(16)
+)
+RETURNS VARCHAR(20)
 AS
 BEGIN
-    SET @username = @last_name + SUBSTRING(@account_number,6,5);
+    RETURN @last_name + SUBSTRING(@account_number, 6, 5);
 END;
 GO
 
--- Procedure to generate account number based on current timestamp
 CREATE PROCEDURE get_account_number
-    @account_number CHAR(16) OUTPUT
+---- Procedure to generate account number based on current timestamp
+--CREATE PROCEDURE get_account_number
+--    @account_number CHAR(16) OUTPUT
+--AS
+--BEGIN
+--    DECLARE @seconds BIGINT;
+--    SET @seconds = CAST(CAST(DATEDIFF(SECOND, '1970-01-01', SYSDATETIME()) AS BIGINT) * 1000000 AS BIGINT);
+--    SET @account_number = CAST(@seconds AS CHAR(16));
+--END;
+--GO
+
+-- Function to generate account number based on current timestamp
+CREATE FUNCTION get_account_number ()
+RETURNS CHAR(16)
 AS
 BEGIN
     DECLARE @seconds BIGINT;
-    SET @seconds = CAST(CAST(DATEDIFF(SECOND, '1970-01-01', SYSDATETIME()) AS BIGINT) * 1000000 AS BIGINT);
+    DECLARE @account_number CHAR(16);
+    
+    SET @seconds = CAST(DATEDIFF(SECOND, '1970-01-01', SYSDATETIME()) AS BIGINT) * 1000000;
     SET @account_number = CAST(@seconds AS CHAR(16));
+    
+    RETURN @account_number;
 END;
 GO
 

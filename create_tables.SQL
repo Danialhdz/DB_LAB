@@ -75,3 +75,34 @@ BEGIN
     );
 END;
 
+IF NOT EXISTS (
+    SELECT * FROM sys.tables WHERE name = 'recent_events'
+)
+BEGIN
+    CREATE TABLE recent_events (
+        event_id INT IDENTITY(1,1) PRIMARY KEY,
+        event_type VARCHAR(20) NOT NULL,
+        event_time DATETIME NOT NULL,
+        account_number CHAR(16) NOT NULL,
+        amount DECIMAL(16,2),
+        FOREIGN KEY (account_number) REFERENCES account(account_number)
+    );
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM sys.tables WHERE name = 'branches'
+)
+BEGIN
+    CREATE TABLE branches (
+		branch_id INT IDENTITY(1,1) PRIMARY KEY,
+		branch_name VARCHAR(100) NOT NULL,
+		address VARCHAR(255) NOT NULL,
+		city VARCHAR(50) NOT NULL,
+		state VARCHAR(50) NOT NULL,
+		postal_code VARCHAR(20) NOT NULL,
+		country VARCHAR(50) NOT NULL
+    );
+END;
+
+
+

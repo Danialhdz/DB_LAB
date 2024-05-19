@@ -17,8 +17,16 @@ BEGIN
 
     SET @age = DATEDIFF(YEAR, @date_of_birth, GETDATE());
 
-    EXEC get_account_number @account_number OUTPUT;
-    EXEC get_username @last_name, @account_number, @username OUTPUT;
+    --EXEC get_account_number @account_number OUTPUT;
+   
+	SET @account_number = dbo.get_account_number();
+
+
+	--EXEC get_username @last_name, @account_number, @username OUTPUT;
+
+	-- Using the function in a SELECT statement
+	SET @username = dbo.get_username(@last_name, @account_number);
+
 
     IF @age < 13
     BEGIN
